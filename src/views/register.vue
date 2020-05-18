@@ -163,7 +163,6 @@ export default {
           this.$store.commit('SET_LOGIN', true)
         })
         .catch(err => {
-          console.log(err.response)
           this.message = err.response.data.msg
         })
         .finally(() => {
