@@ -114,7 +114,7 @@ export default {
       name: '',
       type: 'password',
       requiredEmail: '',
-      baseUrl: 'http://localhost:3000/',
+      baseUrl: 'https://shielded-bastion-44955.herokuapp.com/',
       message: '',
       requiredPassword: '',
       requiredConfirm: '',
@@ -168,6 +168,10 @@ export default {
         })
         .then(({ data }) => {
           localStorage.setItem('token', data.acces_token)
+          localStorage.setItem('name', data.name)
+          localStorage.setItem('money', data.money)
+          this.$store.commit('SET_MONEY', data.money)
+          this.$store.commit('SET_TOKEN', data.acces_token)
           this.$store.commit('SET_LOGIN', true)
           this.$router.push('/')
         })
