@@ -23,8 +23,8 @@
                 dark
                 flat
               >
-                <v-toolbar-title>Welcome! Please login first</v-toolbar-title>
-                <v-spacer></v-spacer>
+              <v-toolbar-title>Welcome to Belanja.In</v-toolbar-title>
+              <v-spacer></v-spacer>
               </v-toolbar>
               <v-card-text>
                 <v-form @keyup.native.enter.prevent="login">
@@ -47,6 +47,21 @@
                   </v-text-field>
                 </v-form>
               </v-card-text>
+              <div class="text-center">
+                <v-snackbar
+                  v-model="snackbar"
+                  :timeout="timeout"
+                >
+                  {{ message }}
+                  <v-btn
+                    color="blue"
+                    text
+                    @click.prevent="snackbar = false"
+                  >
+                    Close
+                  </v-btn>
+                </v-snackbar>
+              </div>
               <v-card-actions v-if="emailLogin !== '' && passwordLogin !== ''">
                 <v-spacer></v-spacer>
                 <v-btn @click.prevent="login" color="primary">Login</v-btn>
@@ -62,7 +77,7 @@
 <script>
 import Loading from './loading'
 export default {
-  name: 'Login',
+  name: 'login',
   components: {
     Loading
   },
@@ -75,7 +90,9 @@ export default {
       type: 'password',
       disableLogin: true,
       isLoading: false,
-      message: ''
+      message: '',
+      snackbar: false,
+      timeout: 2000
     }
   },
   methods: {
@@ -92,11 +109,16 @@ export default {
       this.$store.dispatch('login', payload)
         .then(({ data }) => {
           localStorage.setItem('token', data.acces_token)
+          localStorage.setItem('name', data.name)
+          localStorage.setItem('money', data.money)
+          this.$store.commit('SET_MONEY', data.money)
           this.$store.commit('SET_TOKEN', data.acces_token)
           this.$store.commit('SET_LOGIN', true)
+          this.$router.push('/')
         })
         .catch(err => {
-          console.log(err.response.data.msg)
+          this.message = err.response.data.msg
+          this.snackbar = true
         })
         .finally(() => {
           this.isLoading = false

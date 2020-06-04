@@ -1,5 +1,7 @@
 # CMS_Customer
 
+### URL : https://blanja-in.web.app
+
 ## Project setup
 ```
 npm install

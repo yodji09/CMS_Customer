@@ -1,18 +1,41 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <v-app>
+    <v-container v-for="item in Categories" :key="item.id">
+    <v-toolbar class="red">{{item.name}} </v-toolbar>
+      <v-layout row justify-around align-center>
+        <v-row v-for="product in item.Products" :key="product.id">
+          <v-layout class="px-5 py-5">
+            <Card :product="product" />
+          </v-layout>
+        </v-row>
+      </v-layout>
+    </v-container>
+  </v-app>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
+import Card from '../components/card'
 export default {
-  name: 'Home',
+  name: 'home',
+  data () {
+    return {
+
+    }
+  },
   components: {
-    HelloWorld
+    Card
+  },
+  computed: {
+    wishlist () {
+      return this.$store.state.wishlist
+    },
+    Categories () {
+      return this.$store.state.categories
+    }
   }
 }
 </script>
+
+<style>
+
+</style>

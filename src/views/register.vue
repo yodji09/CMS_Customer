@@ -1,12 +1,5 @@
 <template>
   <v-app class="black">
-    <div>
-      <div v-if="message" style="font-size : 15px !important; color: red;">
-          {{message}}
-      </div>
-      <div v-if="messageSucces" style="font-size : 15px !important; color: red;">
-          {{messageSucces}}
-      </div>
       <div v-if="isLoading">
         <Loading></Loading>
       </div>
@@ -14,7 +7,7 @@
         <v-container v-if="!isLoading"
         class="fill-height"
         fluid
-      >
+        >
         <v-row
           align="center"
           justify="center"
@@ -30,7 +23,7 @@
                 dark
                 flat
               >
-                <v-toolbar-title>Welcome! Join Us</v-toolbar-title>
+                <v-toolbar-title>Welcome! Join us to shop your life</v-toolbar-title>
                 <v-spacer></v-spacer>
               </v-toolbar>
               <v-card-text>
@@ -77,16 +70,30 @@
                   </v-text-field>
                 </v-form>
               </v-card-text>
+              <div class="text-center">
+                <v-snackbar
+                  v-model="snackbar"
+                  :timeout="timeout"
+                >
+                  {{ message }}
+                  <v-btn
+                    color="blue"
+                    text
+                    @click.prevent="snackbar = false"
+                  >
+                    Close
+                  </v-btn>
+                </v-snackbar>
+              </div>
               <v-card-actions v-if="email !== '' && password !== '' && confirmPassword !== '' && name !== ''">
                 <v-spacer></v-spacer>
-                <v-btn @click.prevent="login" color="primary">Login</v-btn>
+                <v-btn @click.prevent="registerUser" color="primary">create</v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
         </v-row>
       </v-container>
       </div>
-    </div>
   </v-app>
 </template>
 
@@ -109,7 +116,6 @@ export default {
       requiredEmail: '',
       baseUrl: 'http://localhost:3000/',
       message: '',
-      messageSucces: '',
       requiredPassword: '',
       requiredConfirm: '',
       emailRules: [
@@ -127,7 +133,10 @@ export default {
       ],
       nameRules: [
         v => !!v || 'Name is required'
-      ]
+      ],
+      snackbar: false,
+      timeout: 2000,
+      isLoading: false
     }
   },
   methods: {
@@ -148,7 +157,6 @@ export default {
         }
       })
         .then(({ data }) => {
-          this.messageSucces = 'Succes create new data with email :' + data.email
           return axios({
             method: 'POST',
             url: this.baseUrl + 'user/login',
@@ -161,9 +169,11 @@ export default {
         .then(({ data }) => {
           localStorage.setItem('token', data.acces_token)
           this.$store.commit('SET_LOGIN', true)
+          this.$router.push('/')
         })
         .catch(err => {
           this.message = err.response.data.msg
+          this.snackbar = true
         })
         .finally(() => {
           this.isLoading = false
